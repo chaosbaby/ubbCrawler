@@ -7,7 +7,7 @@ def read_file(file_path):
     return content
 
 
-def convert_to_dic(data=""):
+def to_dic(data=""):
     lines = data.strip()
 
     # Create a dictionary to hold the data
@@ -25,16 +25,32 @@ def convert_to_dic(data=""):
         data_dict["id"] = ids[0]
     return data_dict
 
+def to_ubb(ubbdic):
+    result = "[DhtmlXQ] \n"
+
+    for key, value in ubbdic.items():
+        result += f"[{key}]{value}[/{key}]\n"
+
+    result += "[/DhtmlXQ]\n"
+
+    return result
+
+import json
+@wrapper.process_parameter("ubbdic", json.loads)
+def __to_ubb(ubbdic):
+    return to_ubb(ubbdic)
+
+
 @wrapper.jsonfy_this
 @wrapper.process_parameter("data", read_file)
-def __convert_to_json(data=""):
+def __to_json(data=""):
     """
     Convert ubb chess text to json
     """
 
-    return convert_to_dic(data)
+    return to_dic(data)
 
 if __name__ == "__main__":
     wrapper.__name__ = "__main__"
     from clize import run
-    run(__convert_to_json)
+    run(__to_json, __to_ubb)
