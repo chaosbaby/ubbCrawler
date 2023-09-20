@@ -57,7 +57,7 @@ CREATE TABLE chess_play (
 
 import sqlite3
 
-DB_PATH = "../resource/test.db"
+DB_PATH = "resource/test.db"
 
 
 def init():
