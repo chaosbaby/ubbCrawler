@@ -29,6 +29,8 @@ def to_ubb(ubbdic):
     result = "[DhtmlXQ] \n"
 
     for key, value in ubbdic.items():
+        if value is None:
+            value = ""
         result += f"[{key}]{value}[/{key}]\n"
 
     result += "[/DhtmlXQ]\n"

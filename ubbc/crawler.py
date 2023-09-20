@@ -1,11 +1,9 @@
-from ast import Num
 import chardet
 from lxml import etree
 import re
 from reqaio import aio
-import parser,db
+import parser,db,osutil
 from cmdhelper import wrapper
-import os
 
 playXpath = '//*[@id="dhtmlxq_view"]//text()'
 xpathMoveStr = '//*[@type="text/javascript"]//text()'
@@ -45,13 +43,10 @@ def crawl_from(start=1,count=10):
 
 
 import sqlite3
-# def crawl_to_db(start,end,db_path,t_name):
 def crawl_to_db(to=1,db_path="resource/test.db",t_name="chess_play"):
     """
         Crawls from maxid with count afterwards
     """
-    # db_path = "resource/test.db"
-    # t_name = "chess_play"
     maxid = max_id()
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
@@ -70,25 +65,6 @@ def crawl_to_db(to=1,db_path="resource/test.db",t_name="chess_play"):
     conn.commit()
     conn.close()
 
-def savePlay(dir, title, content, ext="txt", encoding="utf-8"):
-    # code = content.encode()
-    # content = code.decode(encoding, 'ignore')
-
-    # local = r"{}\{}".format(dir, encoding)
-    local = os.path.join(dir,encoding) 
-    file = title + "." + ext
-    path = os.path.join(local, file)
-    if not os.path.exists(local):
-        os.mkdir(local)
-    print(path)
-    try:
-        with open(path, "w", encoding=encoding) as f:
-            f.write(content)
-            f.close()
-    except Exception as e:
-        print("play %s save as file has failed" % title)
-        print(e)
-        pass
 
 def max_id():
     db_path="resource/test.db"
@@ -117,7 +93,7 @@ def crawl_to_file(count=1,path="resource/"):
         content = content.decode(coding, 'ignore')
         ubbplay = ubbParse(content) 
         ubb = parser.to_dic(ubbplay)
-        savePlay(path,ubb['id'],ubbplay)
+        osutil.savePlay(path,ubb['id'],ubbplay)
 
 
     aio.run(urls, ubb_crawl_cb)
