@@ -2,8 +2,8 @@ import chardet
 from lxml import etree
 import re
 from reqaio import aio
-import json
 import parser
+from cmdhelper import wrapper
 
 playXpath = '//*[@id="dhtmlxq_view"]//text()'
 xpathMoveStr = '//*[@type="text/javascript"]//text()'
@@ -21,8 +21,11 @@ def ubbParse(c):
     ubbPlayStr = re.sub(ubbMovePattern, ubbMove, ubbPlayStr)
     return ubbPlayStr
 
-def test():
-    ids = range(1, 2)
+def crawl_from_to(start=1,end=2):
+    """
+        Crawls from start to end
+    """
+    ids = range(start, end)
     urlTemp = "http://www.dpxq.com/hldcg/search/view_m_%d.html"
     urls = [urlTemp % id for id in ids]
     rets = []
@@ -32,13 +35,13 @@ def test():
         coding = chardet.detect(content)['encoding'] or "GB2312"
         content = content.decode(coding, 'ignore')
         ubbplay = ubbParse(content) 
-        ubb = parser.convert_to_json(ubbplay)
-        jsonUbb = json.dumps(ubb, ensure_ascii=False)
-        rets.append(jsonUbb)
+        ubb = parser.convert_to_dic(ubbplay)
+        rets.append(ubb)
     aio.run(urls, ubb_crawl_cb)
     return rets
 
 from clize import run
 if __name__ == '__main__':
-    run(test)
+    wrapper.__name__ = "__main__"
+    run(wrapper.jsonfy_this(crawl_from_to))
 

@@ -94,7 +94,7 @@ def missing():
 
     missing_ids = list(find_missing_numbers(ids, max(ids)))
 
-    return missing_ids, len(missing_ids)
+    return missing_ids
 
 
 from cmdhelper import wrapper
@@ -117,7 +117,7 @@ def toSqlPairs(data_dict, table_name):
     return query, values
 
 
-@wrapper.process_parameter("data_dict", json.loads)
+# @wrapper.process_parameter("data_dict", json.loads)
 def insert(data_dict=None, table_name=None, db_path=None):
     """
     Inserts a dictionary as a row into the specified database table.
@@ -143,5 +143,6 @@ def insert(data_dict=None, table_name=None, db_path=None):
 if __name__ == "__main__":
     wrapper.__name__ = "__main__"
     from clize import run
-
-    run(init, insert, missing)
+    __missing = wrapper.jsonfy_this(missing)
+    __insert = wrapper.process_parameter("data_dict", json.loads)(insert)
+    run(init, __insert, __missing)

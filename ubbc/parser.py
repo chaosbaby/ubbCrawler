@@ -2,18 +2,12 @@ from cmdhelper import wrapper
 import re
 
 def read_file(file_path):
-    with open(file_path, "r", encoding="GBK") as file:
+    with open(file_path, "r") as file:
         content = file.read()
     return content
 
 
-@wrapper.jsonfy_this
-@wrapper.process_parameter("data", read_file)
-def convert_to_json(data=""):
-    """TODO: Docstring for convert_to_json.
-    :param data: datastring
-    :returns: json format data
-    """
+def convert_to_dic(data=""):
     lines = data.strip()
 
     # Create a dictionary to hold the data
@@ -31,9 +25,16 @@ def convert_to_json(data=""):
         data_dict["id"] = ids[0]
     return data_dict
 
+@wrapper.jsonfy_this
+@wrapper.process_parameter("data", read_file)
+def __convert_to_json(data=""):
+    """
+    Convert ubb chess text to json
+    """
+
+    return convert_to_dic(data)
 
 if __name__ == "__main__":
     wrapper.__name__ = "__main__"
     from clize import run
-
-    run(convert_to_json)
+    run(__convert_to_json)
